@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+.env*
+coverage/
+test-results/
+*.log
+/video-kit/
+/*.zip
+/*.mp3
+/*.mp4
