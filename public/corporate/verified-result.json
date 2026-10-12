@@ -1,0 +1,27 @@
+{
+  "issuer": "5jRKngRr7iWJ54L1jv6NZ1ZjaWMZk9ofhgfU1utPURPo",
+  "bondMint": "4eSLChxSuUMhei8S6J1hNeTXyqFNaZoqu7nrrd3Rjyvu",
+  "cashMint": "FCwpbRraDfhLKxd2HKpPbVZFMes5qcgVGkxXLP6ZNqmu",
+  "slot": 510411591,
+  "supply": "0",
+  "paid": [
+    "10900000000",
+    "21800000000",
+    "32700000000"
+  ],
+  "treasury": "34600000000",
+  "signatures": {
+    "bond": "o6CBDfak78YTV4xS3yByVgoGqJFiYndKrCc1fHNE2Ad6rhhmzJDAs6qvuEyNzUxMg8dZndZdB8knyxhGDPsoSqF",
+    "cash": "4CBhCAcRCM9HxmYvVjQkbfPDe44d572dZEWY1fvhBFby2ftw6zytsmYWmPeU7MXy51aMYyeNvV5HW8LdqfEwVYBD",
+    "holder-0": "27jw1HfQao6Uo8ZuWzY94aBzmR5sDmovvVEJCy89d7A6LyEJUFzTMcop6pkGYo9qGuUuR9CVL2jWVpFZCdd8gpNX",
+    "holder-1": "8octnPSUvWvLHQesNNrXEoz5xShR4m8bbRm9QFMdtjrbByjPfBBvSP5rgUHc8Xq3z5kGQSRxsrw7ZqcouVbzu1s",
+    "holder-2": "4g1q5JFrgEyRKrnSPhreDsZcS7KTuavGpGa7gaSKNfGzwLtoegJtQXKC1FQXGGLCgcNbG8RnUJk67LkYNbhixpUa",
+    "seal": "2JJ1EWAHyUdm3zcYNgaWC1VattQbkCNuvcNTWeMXAKxK9VYYhQhEytzajmBGRkB7TTECcXGXaa9GQyxB8Qz6vSv4",
+    "snapshot-coupon": "CVj54Y4QbQMew1RfdpF1MBieRWDogxxNM9sCJyNNw2UQtFNqAvBcW9hj8Q2F5DbctPmbwGESe6CHwSjeR8159Zi",
+    "coupon": "2JphGu7VuKGiG4cLycdSnABGZUijeVcuSpiHkBdz1UBM61XCj1dbxao2ma5wJ5oQ61wV57Y3qhN32nnHrYLdBrd9",
+    "snapshot-partial": "4yHeH7dcxLUbPXD5xay1YphvShkaeJenzbF4sipsG66HrvMufrRpHkuUk4UePQDxue9TDjXbWeYHPEaw69rDt3z6",
+    "partial": "4tsrPDUZ2RCjSXCHiqHfSVa2a9LoNAXCYzcAc1ym4dhhzxDiBJiyqSUJkGsCDrGVVNTjZLCQ3dSWCyr9EMrxyXoE",
+    "snapshot-redemption": "4rPGPmXA4oHbEjumXVtYsWy3oqUMu4tZBjN94UfUjqUmFEiGkvujGPEhQhgqXrvfBuwmPGwAzkj4JAHZjEmRQp7w",
+    "redemption": "5KBRMZBrCGLCNgXhhmzV1LaXgBrvsemKUo5nJsUeZJPGMxPobTA95C8g4mCDGxZtBxhbPM58YMFWqMpcGGvPqj4o"
+  }
+}

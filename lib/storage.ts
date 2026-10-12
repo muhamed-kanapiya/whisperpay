@@ -3,7 +3,7 @@ import { validAddress } from "./parseIntent";
 import type { Activity, Contact, MintRecord } from "./types";
 import { VOICE_SETTINGS_KEY } from "./voice-settings";
 
-export const STORAGE = { key: "whisperpay_key", contacts: "whisperpay_contacts", history: "whisperpay_history", mint: "whisperpay_mint", voice: VOICE_SETTINGS_KEY } as const;
+export const STORAGE = { key: "whisperpay_key", contacts: "whisperpay_contacts", history: "whisperpay_history", mint: "whisperpay_mint", voice: VOICE_SETTINGS_KEY, corporate: "whisperpay_corporate_v1" } as const;
 
 export function readWallet(): Keypair | null {
   const raw = localStorage.getItem(STORAGE.key);

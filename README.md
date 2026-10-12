@@ -6,6 +6,18 @@ Live demo: https://muhamed-kanapiya.github.io/whisperpay/
 
 Wallet: https://muhamed-kanapiya.github.io/whisperpay/app/
 
+Corporate Actions: https://muhamed-kanapiya.github.io/whisperpay/corporate/
+
+## KASE corporate-actions prototype
+
+WhisperPay now includes a voice-guided bond issuer desk: a real Token-2022 instrument, a three-holder registry, finalized record-date snapshots, coupon payments, 20% partial redemption, and maturity redemption with a final coupon. Settlement transfers, bond burns and replay markers are atomic Solana Devnet transactions. The funded lifecycle test paid 65,400 **testUSD** and retired all 60 bonds.
+
+Choose **Inspect completed run** on the corporate page to see and verify public receipts without funding a wallet. To operate your own demo instrument, fund the browser wallet with Devnet SOL, then complete the guided setup. This is an issuer-controlled prototype; client-side entitlements, fixture investors, accelerated maturity, and simulated cash are clearly disclosed. There is no KASE or bank integration.
+
+- [Technical overview, calculations, trust model and evidence](docs/KASE-TECHNICAL.md)
+- [Recording guide for all three required scenarios](docs/KASE-DEMO-GUIDE.md)
+- [Public on-chain audit](public/corporate/verified-audit.json)
+
 Project logo: [1024×1024 PNG](public/whisperpay-logo.png)
 
 ## Run locally

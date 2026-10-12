@@ -10,19 +10,25 @@ const phases = [
     live: true,
   },
   {
-    step: "02", status: "Next", title: "A wallet that explains your activity",
+    step: "02", status: "Devnet prototype", title: "Voice-guided corporate actions",
+    description: "A bond issuer desk with holder snapshots, coupon distributions, partial redemption, and maturity settlement. Test cash transfers and bond burns have been verified on Solana Devnet.",
+    details: ["Public transaction receipts and downloadable audit evidence", "Next: program-enforced entitlements, institutional signing, and transferable record dates"],
+    live: true,
+  },
+  {
+    step: "03", status: "Next", title: "A wallet that explains your activity",
     description: "A dashboard for spending by token, recent payments, and frequent recipients. Ask a question and hear an answer based on your actual transactions.",
     details: ["“How much SOL did I send this week?”", "Answers with a time range and links to the matching transactions"],
     live: false,
   },
   {
-    step: "03", status: "Planned", title: "More ways to request and pay",
+    step: "04", status: "Planned", title: "More ways to request and pay",
     description: "QR payment requests, invoices, and split payments that help people settle up without losing track of the details.",
     details: ["Track requested, pending, and confirmed payments", "Review every recipient, amount, and fee before a split payment"],
     live: false,
   },
   {
-    step: "04", status: "Research", title: "More natural voice. Stronger wallet access.",
+    step: "05", status: "Research", title: "More natural voice. Stronger wallet access.",
     description: "Explore conversational voice models alongside wallet connections, passkeys, and recovery. Keep a free browser voice option available.",
     details: ["Evaluate voice quality, privacy, latency, and cost", "Security review and recovery testing before any mainnet release"],
     live: false,
