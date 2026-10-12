@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { parseIntent, validAddress } from "./parseIntent";
 import type { Intent } from "./types";
+import { APP_BASE_PATH } from "./deployment";
 
 export type PaymentRequest = Intent & { token: "SOL" | "USDC" };
 
@@ -11,9 +12,9 @@ export function validateRequest(amount: string, token: string, recipient: string
   return parseIntent(`send ${amount} ${token} to ${recipient}`) as PaymentRequest;
 }
 
-export function paymentRequestUrl(origin: string, amount: string, token: string, recipient: string): string {
+export function paymentRequestUrl(origin: string, amount: string, token: string, recipient: string, basePath = APP_BASE_PATH): string {
   const request = validateRequest(amount, token, recipient);
-  const url = new URL("/app/", origin);
+  const url = new URL(`${basePath}/app/`, origin);
   if (!["https:", "http:"].includes(url.protocol)) throw new Error("Use an HTTP or HTTPS app URL.");
   url.search = new URLSearchParams({ network: "devnet", to: request.recipient, amount, token: request.token }).toString();
   return url.toString();

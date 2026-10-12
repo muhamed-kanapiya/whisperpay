@@ -2,6 +2,12 @@
 
 **Just whisper to pay.** A complete browser-based Solana Devnet wallet with a premium landing page, voice commands, contacts, real SOL and SPL token transfers, and explicit confirmation.
 
+Live demo: https://muhamed-kanapiya.github.io/whisperpay/
+
+Wallet: https://muhamed-kanapiya.github.io/whisperpay/app/
+
+Project logo: [1024×1024 PNG](public/whisperpay-logo.png)
+
 ## Run locally
 
 Use Node.js 20.19+ (Node.js 22 or 24 recommended) and npm.
@@ -51,6 +57,16 @@ The USDC mint is sourced from https://developers.circle.com/stablecoins/usdc-con
 Import this directory from your own Git repository. Use the Next.js preset, `npm run build`, and output directory `out` (already declared in `vercel.json`). There are no environment variables. Vercel provides HTTPS for microphone access. The static export makes all wallet logic run in the browser and requires no server functions. The included security headers restrict network requests to the fixed Devnet RPC.
 
 The supplied reference HTML is retained unchanged and is not copied into the published `out` directory. Project source and the app's GitHub buttons point to https://github.com/muhamed-kanapiya/whisperpay.
+
+## GitHub Pages
+
+The public demo uses the `gh-pages` branch. `main` contains the complete application source; `gh-pages` contains only its generated static export. The original `Voxa-Landing-Voice-Wallet.html` is a design reference, not a second product. Local video-production materials are excluded from the repository.
+
+Run `npm run deploy:pages` from a checkout with GitHub push access to rebuild for `/whisperpay`, disable Jekyll, and publish the static export. This uses a separate Git index and keeps the source checkout on its current branch. Pushing `main` alone does not rebuild the public demo. `npm run build` still creates the normal localhost/Vercel export with no base path. GitHub Pages does not apply the custom response headers in `vercel.json`.
+
+### Judge access
+
+No account, login credentials, wallet extension, or API key is required. Open the wallet link, click **Create Demo Wallet**, and allow microphone access if using voice in Chrome or Edge. If the automatic Devnet faucet is unavailable, copy the public wallet address and use https://faucet.solana.com, then refresh. Add a recipient address you control to Contacts, say or type **Send 0.1 SOL to mom**, review the address and costs, and confirm separately. The typed flow remains available without microphone access. All funds are Devnet test assets with no real value.
 
 ## Architecture
 
