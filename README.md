@@ -48,7 +48,11 @@ You can type the same command. Full base58 addresses are accepted, preserving ca
 - **Receive/request:** generate a SOL or USDC link that opens an explicit payment review. Links contain the public recipient, amount, asset, and Devnet network marker. Opening a link never sends funds. Links are editable and unauthenticated, not signed invoices or payment receipts; verify the recipient separately. Localhost links only work on the same computer. WHISPER requests are excluded because each wallet has a different mint.
 - **Cost preview:** before approval, query live balances, network fees, and any recipient token-account rent. Show total SOL debit and estimated remaining SOL. An unavailable or failed estimate blocks confirmation; estimates older than 60 seconds require a refresh and another confirmation. Estimates are not fee guarantees. Simulation still runs before broadcast, and changed/deleted contact mappings abort signing.
 - **Wallet commands:** “What is my balance?”, “Show contacts”, and “Help” return read-only responses. “Pay twenty five USDC to alice” and explicit decimal amounts are supported. “Change amount to five” or “Make it 0.05” during review creates another review and estimate, never approval. Unsupported currencies such as “dollars” are not inferred to mean USDC.
-- **Readback:** click Read payment aloud or Read aloud for browser speech synthesis. The microphone and approval controls are disabled while readback is active. Readback is optional and never automatically opens the microphone.
+- **Guided voice assistant:** choose **Guide me through a payment**, or say/type **Make a payment**. The assistant asks for the missing amount, asset, and recipient, then reads the completed payment back when spoken replies are enabled. Answers can be short: “five”, “USDC”, “mom”. Balance/contact questions preserve an unfinished draft. “Cancel” discards it. Unknown contacts are never guessed.
+- **More natural wording:** “Could you send mom half a SOL?”, “Send point five SOL to mom”, and mixed spoken/numeric decimals are supported. The token words “soul” and “sole” are interpreted as SOL only in the asset position; the exact asset is shown during review. Amounts and addresses are never fuzzy-matched. Fifteen editable examples cover payments, questions, and corrections. “Change recipient to alice” and “Use USDC” create a new review and cost estimate.
+- **Spoken confirmations:** turn on **Spoken replies** for follow-up questions, balance/contact answers, payment readback, and confirmed-success/error responses. Tap the mic for each answer. A fresh, separate “confirm”, “yes”, or “send” is still required. The assistant never starts the microphone automatically, and input/approval is blocked while it speaks. Aborted or stale speech callbacks cannot approve a payment.
+- **Voice preferences:** under **Voice & recognition settings**, select an available English voice, preview it, choose a pace, and set the listening accent (US, UK, India, Australia). Automatic selection prefers voices labeled natural/enhanced when the browser provides them. These are device/browser voices, not a hosted generative AI or a guaranteed neural voice. Preferences stay in local browser storage; audio quality varies by device. No API key, paid service, or backend is introduced.
+- **Recognition recovery:** live transcripts remain visible, with an edit option and up to two alternative transcriptions when supported by the browser. Alternatives only fill the command box; they never automatically replace a command or approve a payment. Use saved contact names instead of speaking long addresses.
 
 The USDC mint is sourced from https://developers.circle.com/stablecoins/usdc-contract-addresses. Browser readback uses https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis.
 
@@ -78,8 +82,11 @@ components/landing/           Landing sections and animated voice illustration
 components/wallet/            Wallet, voice, contacts, history
 components/ui/                shadcn-style Button, Card, Input
 hooks/useVoice.ts             Web Speech API lifecycle and error handling
+hooks/useReadback.ts          Voice discovery, preferences, and speech playback
 hooks/useSolana.ts            Wallet persistence and transaction state
 lib/parseIntent.ts            Strict grammar, exact amounts, contact lookup
+lib/conversation.ts           Guided payment drafts and review corrections
+lib/speech-session.ts         One-turn recognition and stale-event cancellation
 lib/solana.ts                 Fixed Devnet connection, mint/transfer, confirmation
 lib/storage.ts                Validated browser persistence
 tests/                        Parser, signing/confirmation, and storage regression tests
@@ -112,6 +119,8 @@ Browser speech recognition requires microphone permission, HTTPS/localhost, a co
 The dependency audit is not clean: the mandated Next.js 14 and legacy Solana dependency tree still have advisories. Next.js server features are absent from the exported deployment; native `bigint-buffer` code is not used by the browser bundle. These deployment facts do not constitute a complete security audit. Compatible overrides update PostCSS and the local static server's compression dependency. The development server binds to `127.0.0.1`; do not expose it publicly.
 
 ## Verification
+
+Voice-assistant update, October 13, 2026: 78 unit tests pass, including guided drafts, natural wording, exact amounts, asset/recipient corrections, recognition alternatives, and rejection of late/aborted approval events. The GitHub Pages production build passes type checking and lint. Browser checks cover short-answer dialogue through payment review, recipient corrections, confirmation blocked by insufficient funds, example selection without execution, readback blocking the mic, and a narrow layout without horizontal overflow. The test wallet's faucet request was rate-limited. Actual microphone accuracy and audible voice quality were not verified; both depend on the browser/device.
 
 Unit tests cover strict command parsing, separate confirmation, address preservation, exact lamport/token amounts, real serialized signing, fixed-supply mint instructions, failed/uncertain confirmation, persistence-before-broadcast, corrupted keys, and scoped reset. RPC tests are mocked and do **not** prove live Devnet availability. A live microphone and funded Devnet end-to-end test still depend on the browser and public faucet.
 

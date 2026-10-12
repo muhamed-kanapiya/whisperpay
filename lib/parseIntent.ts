@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import type { Contact, Intent, ResolvedIntent } from "./types";
+import type { Contact, Intent, ResolvedIntent, Token } from "./types";
 
 export const PARSE_ERROR = "Try ‘Send 0.1 SOL to mom’, ‘Pay 5 USDC to alice’, or ‘What is my balance?’";
 
@@ -20,33 +20,56 @@ function spokenInteger(text: string): number {
   throw new Error("Use a clear amount, such as ‘twenty five’ or ‘zero point one’.");
 }
 
-function amountDigits(text: string): string {
+export function amountDigits(text: string): string {
   if (/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(text)) return text;
-  const normalized = text.toLowerCase().replace(/-/g, " ").replace(/\s+/g, " ").trim();
+  let normalized = text.toLowerCase().replace(/(?<=[a-z])-(?=[a-z])/g, " ").replace(/\s+/g, " ").trim();
+  if (/^(?:a |one )?half(?: a)?$/.test(normalized)) return "0.5";
+  if (/^(?:a |one )?quarter(?: a)?$/.test(normalized)) return "0.25";
+  if (normalized.startsWith("point ")) normalized = "zero " + normalized;
   const parts = normalized.split(" point ");
   if (parts.length > 2) throw new Error(PARSE_ERROR);
-  const whole = spokenInteger(parts[0]);
+  const whole = /^\d+$/.test(parts[0]) ? Number(parts[0]) : spokenInteger(parts[0]);
   if (parts.length === 1) return String(whole);
-  const decimals = parts[1].split(" ").map(word => small.indexOf(word));
+  const decimals = parts[1].split(" ").flatMap(word => /^\d+$/.test(word) ? word.split("").map(Number) : [word === "oh" ? 0 : small.indexOf(word)]);
   if (decimals.some(digit => digit < 0 || digit > 9)) throw new Error("Say each digit after ‘point’, such as ‘one point two five’.");
   return `${whole}.${decimals.join("")}`;
 }
 
-/** Conservative grammar: no partial commands, guessed addresses, or inferred amounts. */
-export function parseIntent(text: string): Intent {
-  const cleaned = text.trim().replace(/[.!?]+$/, "").replace(/\s+/g, " ");
-  const match = cleaned.match(/^(?:please\s+)?(?:send|transfer|pay)\s+(.+?)\s+(sol|solana|u\s*s\s*d\s*c|whisper)\s+to\s+(.+)$/i);
-  if (!match) throw new Error(PARSE_ERROR);
-  const amountText = amountDigits(match[1]);
+export function cleanCommand(text: string): string {
+  return text.trim().replace(/[.!?]+$/, "").replace(/\s+/g, " ")
+    .replace(/^(?:(?:hey |hi )?whisperpay[, ]+)?(?:(?:can|could|would) you |i(?:'|’)d like to |i want to |help me )?(?:please )?/i, "")
+    .replace(/,? please$/i, "");
+}
+
+export const TOKEN_PATTERN = "(?:solana|sol|soul|sole|u\\.?\\s*s\\.?\\s*d\\.?\\s*c\\.?|whisper)";
+export function parseToken(text: string): Token | null {
+  const symbol = text.trim().replace(/[.\s]/g, "").toUpperCase();
+  if (["SOL", "SOLANA", "SOUL", "SOLE"].includes(symbol)) return "SOL";
+  if (symbol === "USDC" || symbol === "WHISPER") return symbol;
+  return null;
+}
+
+export function paymentAmount(text: string, token: Token): number {
+  const amountText = amountDigits(text);
   const amount = Number(amountText);
-  const symbol = match[2].replace(/\s/g, "").toUpperCase();
-  const token = symbol === "WHISPER" ? "WHISPER" : symbol === "USDC" ? "USDC" : "SOL";
   const decimals = token === "SOL" ? 9 : 6;
   const [whole = "0", fraction = ""] = amountText.split(".");
   if (fraction.length > decimals) throw new Error(`Use at most ${decimals} decimal places.`);
   const exactUnits = BigInt(whole || "0") * 10n ** BigInt(decimals) + BigInt(fraction.padEnd(decimals, "0"));
   if (toBaseUnits(amount, decimals) !== exactUnits) throw new Error("That amount cannot be represented exactly. Try a smaller amount.");
-  return { action: "send", amount, token, recipient: match[3].trim() };
+  return amount;
+}
+
+/** Flexible wording, but never fuzzy-match a recipient or infer a currency. */
+export function parseIntent(text: string): Intent {
+  const cleaned = cleanCommand(text);
+  const standard = cleaned.match(new RegExp(`^(?:send|transfer|pay) (.+?) (${TOKEN_PATTERN}) to (.+)$`, "i"));
+  const recipientFirst = standard ? null : cleaned.match(new RegExp(`^(?:send|transfer|pay) (.+?) (.+?) (${TOKEN_PATTERN})$`, "i"));
+  const amount = standard?.[1] ?? recipientFirst?.[2];
+  const token = parseToken(standard?.[2] ?? recipientFirst?.[3] ?? "");
+  const recipient = standard?.[3] ?? recipientFirst?.[1];
+  if (!amount || !token || !recipient) throw new Error(PARSE_ERROR);
+  return { action: "send", amount: paymentAmount(amount, token), token, recipient };
 }
 
 /** Decimal string arithmetic avoids silently rounding a transfer's amount. */
@@ -77,7 +100,7 @@ export function resolveIntent(intent: Intent, contacts: Contact[]): ResolvedInte
 }
 
 export function isConfirmation(text: string) { return /^(confirm|yes|send)[.!]?$/i.test(text.trim()); }
-export function isCancellation(text: string) { return /^(cancel|no|stop)[.!]?$/i.test(text.trim()); }
+export function isCancellation(text: string) { return /^(cancel(?: payment| that)?|no|stop|never mind|nevermind)[.!]?$/i.test(text.trim()); }
 
 export function commandForIntent(intent: Intent): string {
   const amount = intent.amount.toFixed(intent.token === "SOL" ? 9 : 6).replace(/0+$/, "").replace(/\.$/, "");
@@ -85,16 +108,17 @@ export function commandForIntent(intent: Intent): string {
 }
 
 export function readOnlyCommand(text: string): "balance" | "contacts" | "help" | null {
-  const command = text.trim().replace(/[.!?]+$/, "").replace(/\s+/g, " ");
+  const command = cleanCommand(text);
   if (/^(?:(?:what is|what's|show|check) (?:my |the )?)?balances?$/i.test(command)) return "balance";
+  if (/^(?:how much (?:do i have|(?:sol|usdc|whisper) do i have)|what do i have|how much is in my wallet)$/i.test(command)) return "balance";
   if (/^(?:(?:show|list) (?:my )?)?contacts$/i.test(command)) return "contacts";
-  if (/^(help|what can i say)$/i.test(command)) return "help";
+  if (/^(help|what can i say|what can you do)$/i.test(command)) return "help";
   return null;
 }
 
 /** Corrections create another review; they can never authorize a transfer. */
 export function reviseAmount(text: string, previous: ResolvedIntent): ResolvedIntent | null {
-  const match = text.trim().replace(/[.!?]+$/, "").match(/^(?:change (?:the )?amount to|make (?:that|it)) (.+)$/i);
+  const match = cleanCommand(text).match(/^(?:change (?:the )?amount to|make (?:that|it)) (.+)$/i);
   if (!match) return null;
   const amount = match[1].replace(new RegExp(`\\s+${previous.token}$`, "i"), "");
   const intent = parseIntent(`send ${amount} ${previous.token} to ${previous.recipient}`);

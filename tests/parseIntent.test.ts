@@ -16,6 +16,7 @@ describe("voice payment intent", () => {
     expect(readOnlyCommand("send all my balance")).toBeNull();
     const prior = { action: "send" as const, amount: 5, token: "USDC" as const, recipient: "mom", address: Keypair.generate().publicKey.toBase58() };
     expect(reviseAmount("Change amount to twenty five USDC", prior)).toEqual({ ...prior, amount: 25 });
+    expect(reviseAmount("Could you change the amount to five?", prior)).toEqual(prior);
     expect(prior.amount).toBe(5);
     expect(() => reviseAmount("make it five and confirm", prior)).toThrow();
     expect(() => reviseAmount("change amount to 2 SOL", prior)).toThrow();

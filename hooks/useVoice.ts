@@ -1,20 +1,7 @@
 "use client";
-
 import { useCallback, useEffect, useRef, useState } from "react";
+import { speechSession, type Recognition } from "@/lib/speech-session";
 
-type SpeechResult = { isFinal: boolean; [index: number]: { transcript: string } };
-type SpeechEvent = { resultIndex: number; results: { length: number; [index: number]: SpeechResult } };
-interface Recognition {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  onresult: ((event: SpeechEvent) => void) | null;
-  onerror: ((event: { error: string }) => void) | null;
-  onend: (() => void) | null;
-  start(): void;
-  stop(): void;
-  abort(): void;
-}
 declare global {
   interface Window {
     SpeechRecognition?: new () => Recognition;
@@ -22,68 +9,50 @@ declare global {
   }
 }
 
-export function useVoice(onFinal?: (text: string) => void) {
+export function useVoice(onFinal?: (text: string) => void, language = "en-US") {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [alternatives, setAlternatives] = useState<string[]>([]);
   const [supported, setSupported] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const recognitionRef = useRef<Recognition | null>(null);
+  const cancelRef = useRef<(() => void) | null>(null);
   const finalCallback = useRef(onFinal);
   finalCallback.current = onFinal;
-
+  const stopListening = useCallback(() => {
+    cancelRef.current?.(); cancelRef.current = null; setIsListening(false); setError(null);
+  }, []);
   useEffect(() => {
+    setSupported(!!(window.SpeechRecognition ?? window.webkitSpeechRecognition));
+    return () => { cancelRef.current?.(); cancelRef.current = null; };
+  }, []);
+  const startListening = useCallback(() => {
     const Constructor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
-    if (!Constructor) return;
-    setSupported(true);
+    if (!Constructor || cancelRef.current) return;
+    if (!window.isSecureContext) { setError("Microphone access requires HTTPS or localhost. You can type a command instead."); return; }
+    setError(null); setTranscript(""); setAlternatives([]);
     const recognition = new Constructor();
-    recognition.lang = "en-US";
+    recognition.lang = language;
     recognition.continuous = false;
     recognition.interimResults = true;
-    let delivered = false;
-    recognition.onresult = event => {
-      const text = Array.from({ length: event.results.length }, (_, i) => event.results[i][0].transcript).join(" ").trim();
-      setTranscript(text);
-      if (!delivered && event.results[event.results.length - 1].isFinal) {
-        delivered = true;
-        setIsListening(false);
-        recognition.stop();
-        finalCallback.current?.(text);
-      }
-    };
-    recognition.onerror = event => {
-      setIsListening(false);
-      if (event.error === "aborted") return;
-      const errors: Record<string, string> = {
-        "not-allowed": "Microphone access was denied. Enable it in your browser, or type a command below.",
-        "audio-capture": "No microphone found. Connect one, or type your command below.",
-        "no-speech": "Didn't hear anything. Try the microphone again, or type below.",
-        "network": "Speech recognition couldn't connect. You can still type your command.",
-        "service-not-allowed": "Speech recognition isn't available in this browser. Type a command below.",
-      };
-      setError(errors[event.error] ?? "Couldn't recognize your voice. Please try again.");
-    };
-    recognition.onend = () => { setIsListening(false); delivered = false; };
-    recognitionRef.current = recognition;
-    return () => {
-      recognition.onresult = null;
-      recognition.onerror = null;
-      recognition.onend = null;
-      recognition.abort();
-      recognitionRef.current = null;
-    };
-  }, []);
-
-  const startListening = useCallback(() => {
-    if (!recognitionRef.current) return;
-    if (!window.isSecureContext) { setError("Microphone access requires HTTPS or localhost. You can type a command instead."); return; }
-    setError(null);
-    setTranscript("");
-    try { recognitionRef.current.start(); setIsListening(true); }
-    catch { setError("The microphone is still closing. Try again in a moment."); }
-  }, []);
-  const stopListening = useCallback(() => {
-    recognitionRef.current?.abort();
-    setIsListening(false);
-  }, []);
-  return { isListening, transcript, startListening, stopListening, supported, error };
+    recognition.maxAlternatives = 3;
+    cancelRef.current = speechSession(recognition, {
+      transcript: setTranscript,
+      final: (text, choices) => { setAlternatives(choices); finalCallback.current?.(text); },
+      end: () => { cancelRef.current = null; setIsListening(false); },
+      error: code => {
+        if (code === "aborted") return;
+        const errors: Record<string, string> = {
+          "not-allowed": "Microphone access was denied. Enable it in your browser, or type below.",
+          "audio-capture": "No microphone found. Connect one, or type below.",
+          "no-speech": "I didn't hear anything. Tap the mic and try again, or type your answer.",
+          "network": "Speech recognition couldn't connect. Your payment draft is still here; type your answer.",
+          "service-not-allowed": "Speech recognition isn't available in this browser. Type below.",
+        };
+        setError(errors[code] ?? "Couldn't recognize your voice. Try again, or type below.");
+      },
+    });
+    try { recognition.start(); setIsListening(true); }
+    catch { stopListening(); setError("The microphone couldn't start. Try again in a moment, or type below."); }
+  }, [language, stopListening]);
+  return { isListening, transcript, alternatives, startListening, stopListening, supported, error };
 }

@@ -21,8 +21,10 @@ describe("demo key persistence", () => {
   it("reset removes only WhisperPay data", () => {
     localStorage.setItem("another-app", "keep");
     save(STORAGE.key, Array(64).fill(1));
+    save(STORAGE.voice, { voiceURI: "test" });
     resetStorage();
     expect(readWallet()).toBeNull();
+    expect(localStorage.getItem(STORAGE.voice)).toBeNull();
     expect(localStorage.getItem("another-app")).toBe("keep");
   });
 });
