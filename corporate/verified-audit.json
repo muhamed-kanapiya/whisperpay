@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "id": "6dde340d3243c175",
+  "issuer": "5jRKngRr7iWJ54L1jv6NZ1ZjaWMZk9ofhgfU1utPURPo",
+  "bondMint": "4eSLChxSuUMhei8S6J1hNeTXyqFNaZoqu7nrrd3Rjyvu",
+  "cashMint": "FCwpbRraDfhLKxd2HKpPbVZFMes5qcgVGkxXLP6ZNqmu",
+  "createdAt": 1791843231,
+  "maturityAt": 1791843411,
+  "holders": [
+    {
+      "name": "Investor A",
+      "address": "AEJZuGP9bXCr99LEEUZihFLzN3YLiCtA6moNrndDPFhr",
+      "initialUnits": 10
+    },
+    {
+      "name": "Investor B",
+      "address": "6TcyF85kc2XdFrt9bBwZAyZ9HfYYrNuYBgpqsEYn4NyR",
+      "initialUnits": 20
+    },
+    {
+      "name": "Investor C",
+      "address": "525qQk6FdxgDk2mGZj3HbNkY9Ye51o2LXfEki5fpxn5G",
+      "initialUnits": 30
+    }
+  ],
+  "receipts": {
+    "bond": {
+      "signature": "o6CBDfak78YTV4xS3yByVgoGqJFiYndKrCc1fHNE2Ad6rhhmzJDAs6qvuEyNzUxMg8dZndZdB8knyxhGDPsoSqF",
+      "lastValidBlockHeight": 497636437,
+      "status": "confirmed"
+    },
+    "cash": {
+      "signature": "4CBhCAcRCM9HxmYvVjQkbfPDe44d572dZEWY1fvhBFby2ftw6zytsmYWmPeU7MXy51aMYyeNvV5HW8LdqfEwVYBD",
+      "lastValidBlockHeight": 497636447,
+      "status": "confirmed"
+    },
+    "holder-0": {
+      "signature": "27jw1HfQao6Uo8ZuWzY94aBzmR5sDmovvVEJCy89d7A6LyEJUFzTMcop6pkGYo9qGuUuR9CVL2jWVpFZCdd8gpNX",
+      "lastValidBlockHeight": 497636801,
+      "status": "confirmed"
+    },
+    "holder-1": {
+      "signature": "8octnPSUvWvLHQesNNrXEoz5xShR4m8bbRm9QFMdtjrbByjPfBBvSP5rgUHc8Xq3z5kGQSRxsrw7ZqcouVbzu1s",
+      "lastValidBlockHeight": 497636845,
+      "status": "confirmed"
+    },
+    "holder-2": {
+      "signature": "4g1q5JFrgEyRKrnSPhreDsZcS7KTuavGpGa7gaSKNfGzwLtoegJtQXKC1FQXGGLCgcNbG8RnUJk67LkYNbhixpUa",
+      "lastValidBlockHeight": 497636885,
+      "status": "confirmed"
+    },
+    "seal": {
+      "signature": "2JJ1EWAHyUdm3zcYNgaWC1VattQbkCNuvcNTWeMXAKxK9VYYhQhEytzajmBGRkB7TTECcXGXaa9GQyxB8Qz6vSv4",
+      "lastValidBlockHeight": 497636928,
+      "status": "confirmed"
+    },
+    "snapshot-coupon": {
+      "signature": "CVj54Y4QbQMew1RfdpF1MBieRWDogxxNM9sCJyNNw2UQtFNqAvBcW9hj8Q2F5DbctPmbwGESe6CHwSjeR8159Zi",
+      "lastValidBlockHeight": 497636972,
+      "status": "confirmed"
+    },
+    "coupon": {
+      "signature": "2JphGu7VuKGiG4cLycdSnABGZUijeVcuSpiHkBdz1UBM61XCj1dbxao2ma5wJ5oQ61wV57Y3qhN32nnHrYLdBrd9",
+      "lastValidBlockHeight": 497637017,
+      "status": "confirmed"
+    },
+    "snapshot-partial": {
+      "signature": "4yHeH7dcxLUbPXD5xay1YphvShkaeJenzbF4sipsG66HrvMufrRpHkuUk4UePQDxue9TDjXbWeYHPEaw69rDt3z6",
+      "lastValidBlockHeight": 497637067,
+      "status": "confirmed"
+    },
+    "partial": {
+      "signature": "4tsrPDUZ2RCjSXCHiqHfSVa2a9LoNAXCYzcAc1ym4dhhzxDiBJiyqSUJkGsCDrGVVNTjZLCQ3dSWCyr9EMrxyXoE",
+      "lastValidBlockHeight": 497637109,
+      "status": "confirmed"
+    },
+    "snapshot-redemption": {
+      "signature": "4rPGPmXA4oHbEjumXVtYsWy3oqUMu4tZBjN94UfUjqUmFEiGkvujGPEhQhgqXrvfBuwmPGwAzkj4JAHZjEmRQp7w",
+      "lastValidBlockHeight": 497637201,
+      "status": "confirmed"
+    },
+    "redemption": {
+      "signature": "5KBRMZBrCGLCNgXhhmzV1LaXgBrvsemKUo5nJsUeZJPGMxPobTA95C8g4mCDGxZtBxhbPM58YMFWqMpcGGvPqj4o",
+      "lastValidBlockHeight": 497637245,
+      "status": "confirmed"
+    }
+  },
+  "snapshots": {
+    "coupon": {
+      "version": 1,
+      "instrument": "4eSLChxSuUMhei8S6J1hNeTXyqFNaZoqu7nrrd3Rjyvu",
+      "action": "coupon",
+      "slot": 510411265,
+      "blockTime": 1791843359,
+      "holders": [
+        {
+          "address": "AEJZuGP9bXCr99LEEUZihFLzN3YLiCtA6moNrndDPFhr",
+          "units": "10"
+        },
+        {
+          "address": "6TcyF85kc2XdFrt9bBwZAyZ9HfYYrNuYBgpqsEYn4NyR",
+          "units": "20"
+        },
+        {
+          "address": "525qQk6FdxgDk2mGZj3HbNkY9Ye51o2LXfEki5fpxn5G",
+          "units": "30"
+        }
+      ]
+    },
+    "partial": {
+      "version": 1,
+      "instrument": "4eSLChxSuUMhei8S6J1hNeTXyqFNaZoqu7nrrd3Rjyvu",
+      "action": "partial",
+      "slot": 510411359,
+      "blockTime": 1791843382,
+      "holders": [
+        {
+          "address": "AEJZuGP9bXCr99LEEUZihFLzN3YLiCtA6moNrndDPFhr",
+          "units": "10"
+        },
+        {
+          "address": "6TcyF85kc2XdFrt9bBwZAyZ9HfYYrNuYBgpqsEYn4NyR",
+          "units": "20"
+        },
+        {
+          "address": "525qQk6FdxgDk2mGZj3HbNkY9Ye51o2LXfEki5fpxn5G",
+          "units": "30"
+        }
+      ]
+    },
+    "redemption": {
+      "version": 1,
+      "instrument": "4eSLChxSuUMhei8S6J1hNeTXyqFNaZoqu7nrrd3Rjyvu",
+      "action": "redemption",
+      "slot": 510411493,
+      "blockTime": 1791843414,
+      "holders": [
+        {
+          "address": "AEJZuGP9bXCr99LEEUZihFLzN3YLiCtA6moNrndDPFhr",
+          "units": "8"
+        },
+        {
+          "address": "6TcyF85kc2XdFrt9bBwZAyZ9HfYYrNuYBgpqsEYn4NyR",
+          "units": "16"
+        },
+        {
+          "address": "525qQk6FdxgDk2mGZj3HbNkY9Ye51o2LXfEki5fpxn5G",
+          "units": "24"
+        }
+      ]
+    }
+  }
+}
